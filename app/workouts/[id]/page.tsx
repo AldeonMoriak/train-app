@@ -24,10 +24,19 @@ export default async function Page({ params }: { params: { id: string } }) {
       </div>
       <div className="w-full p-2">
         <div className="text-base text-gray-900 mb-2">Exercises</div>
-        {workout.exercises.map((ex) => (
-          <Link href={`/exercises/${ex.id}`} key={ex.id}>
-            <ExerciseCard exercise={ex} />
-          </Link>
+        {workout.exercises.map((ex, index) => (
+          <div key={ex.id}>
+            <Link href={`/exercises/${ex.id}`}>
+              <ExerciseCard exercise={ex} />
+            </Link>
+            <div className="mb-1">
+              <span className="text-gray-300 text-xs">Rest </span>
+              <span className="text-sm">
+                {workout.rests[index]}
+                {'"'}
+              </span>
+            </div>
+          </div>
         ))}
       </div>
     </div>

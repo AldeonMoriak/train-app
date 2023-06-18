@@ -4,6 +4,7 @@ export default function Input({
   value,
   textarea = false,
   placeholder = "",
+  type = "text",
 }: {
   label: string;
   textarea?: boolean;
@@ -12,6 +13,7 @@ export default function Input({
     | React.ChangeEventHandler<HTMLTextAreaElement>
     | React.ChangeEventHandler<HTMLInputElement>;
   value?: string | number;
+  type?: React.HTMLInputTypeAttribute
 }) {
   return (
     <label title="name" className="relative">
@@ -27,14 +29,14 @@ export default function Input({
       ) : (
         <input
           value={value}
-          type="text"
+          type={type}
           onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
           placeholder={placeholder}
           name={label}
           className="rounded text-sm text-gray-900 px-2 block border-2 w-full h-10 peer"
         />
       )}
-      <span className="text-base first-letter:uppercase text-gray-900 bg-white absolute left-2 top-1 scale-75 -translate-y-4 origin-[0] duration-300 transform peer-placeholder-shown:scale-100 peer-focus:scale-75 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:top-1.5 peer-placeholder-shown:text-gray-500 peer-focus:text-gray-900">
+      <span className="text-base first-letter:uppercase text-gray-900 bg-white absolute left-2 top-1 scale-75 -translate-y-4 origin-[0] duration-300 transform peer-placeholder-shown:scale-100 peer-focus:scale-75 peer-placeholder-shown:translate-y-0 peer-focus:-translate-y-4 peer-focus:top-1 peer-placeholder-shown:text-gray-500 peer-focus:text-gray-900">
         {label}
       </span>
     </label>

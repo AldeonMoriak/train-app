@@ -20,6 +20,11 @@ export async function addExercise(data: FormData) {
 }
 
 export async function addWorkout(payload: FormData) {
+  const exercises = payload.getAll("exercise");
+  const rests = payload.getAll("rest");
+  if (exercises.length !== rests.length) {
+    throw Error('Please assign a rest to its exercise')
+  }
   const { error, data } = await supabase
     .from("workouts")
     .insert({
@@ -32,13 +37,13 @@ export async function addWorkout(payload: FormData) {
   if (error) {
     throw error;
   }
-  const exercises = payload.getAll("exercises");
-  for (let ex_id of exercises) {
+  for (let i = 0; i < exercises.length; i++) {
     const { error: junction_error } = await supabase
       .from("workout_exercise")
       .insert({
-        exercise_id: ex_id,
+        exercise_id: exercises[i],
         workout_id: (data as any).id,
+        rest: rests[i]
       });
     if (junction_error) {
       throw junction_error;
@@ -64,20 +69,18 @@ export async function getEntityById(table: TableName, id: string) {
 export async function getWorkoutWithExercises(id: string) {
   let { data, error } = await supabase
     .from("workouts")
-    .select("*, workout_exercise(exercise_id)")
+    .select("*, workout_exercise(exercise_id, rest)")
     .eq("id", id)
     .single();
-  const exercises_ids = (data as any)["workout_exercise"].map(
-    (ex: any) => ex.exercise_id
-  );
+  const exercise_pairs = (data as any)["workout_exercise"] as {exercise_id: string; rest: number}[];
   let exercises = [];
-  for (let ex_id of exercises_ids) {
+  for (let pair of exercise_pairs) {
     let { data: exercise } = await supabase
       .from("exercises")
       .select()
-      .eq("id", ex_id)
+      .eq("id", pair.exercise_id)
       .single();
     exercises.push(exercise);
   }
-  return { ...data, exercises };
+  return { ...data, exercises, rests: exercise_pairs.map((item) => item.rest) };
 }

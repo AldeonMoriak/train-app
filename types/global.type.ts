@@ -15,6 +15,7 @@ export type Workout = {
   level: Nullable<Level>;
   description: string;
   exercises: Exercise[];
+  rests: number[]
 };
 
 export type Level = "beginner" | "intermediate" | "advanced";
